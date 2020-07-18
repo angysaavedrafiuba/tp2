@@ -26,6 +26,18 @@ struct gestion_turnos{
 	hash_t* turnos;
 };
 
+int doctor_cmp(const void* doc1, const void* doc2){
+	return strcmp(doc1->nombre, doc2->nombre);
+}
+
+int paciente_cmp(const char *pac1, const char *pac2){
+	if(pac1->ingreso < pac2->ingreso)
+		return -1;
+	if(pac1->ingreso > pac2->ingreso)
+		return 1;
+	return 0;
+}
+
 paciente_t* paciente_crear(char** strv){ //constructor pasado en la funcion csv_crear_estructura
 	paciente_t* paciente = malloc(sizeof(paciente_t));
 
@@ -49,9 +61,23 @@ doctor_t* doctor_crear(char** strv){ //constructor pasado en la funcion csv_crea
 	return doctor;
 }
 
+lista_de_espera_t* lista_de_espera_crear(){
+	lista_de_espera_t* lista_de_espera = malloc(sizeof(lista_de_espera_t));
+
+	if(!lista_de_espera) return NULL;
+
+	lista_de_espera->urgencias = cola_crear();
+	lista_de_espera->regulares = heap_crear(paciente_cmp)
+	lista_de_espera->total_pacientes = 0;
+
+	return lista_de_espera;
+}
+
 gestion_turnos_t* gestion_turnos_crear(const char* ruta_csv_doctores,const char* ruta_csv_pacientes){
 	//gestion_turnos_t* gestion_turnos = malloc...
 	//pacientes = csv_crear_arbol_pacientes...
-	//doctores = csv_crear_arbol_doctores... dentro de esta funcion no se si ir rellenando el hash de especialidades
+	//doctores = csv_crear_arbol_doctores... 
+	//turnos = hash_crear();
+	//iterar el abb de doctores agregando al hash de turnos las especialidades con valor  = lista de espera.
 }
 

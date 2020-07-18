@@ -18,5 +18,6 @@ csv (indicado por la ruta pasada por parámetro) no exista.
 **/
 lista_t* csv_crear_estructura(const char* ruta_csv, void* (*constructor) (char**, void*), void* extra);
 
+abb_t* csv_crear_abb(const char* ruta_csv, int (*abb_comparar_clave_t) (const char *, const char *), void (*abb_destruir_dato_t) (void *), void* (*constructor) (char**));
 
 #endif
