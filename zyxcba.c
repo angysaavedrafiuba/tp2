@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include "funciones_tp2.h"
+#include "gestion_turnos.h"
 #include "strutil.h"
 #include "mensajes.h"
 
