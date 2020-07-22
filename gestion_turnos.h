@@ -1,7 +1,7 @@
 #ifndef GESTION_TURNOS
 #define GESTION_TURNOS
 
-#include <csv.h>
+#include "csv.h"
 #include <stddef.h>
 #include <stdbool.h>
 
@@ -25,6 +25,6 @@ void pedir_turno(char* nombre_paciente, char* especialidad, char* urgencia); //q
 void atender_siguiente(char* nombre_doctor);
 
 //esta funcion imprime
-void imprimir_informe_doctores(char* inicio, char* fin);
+void informe_doctores(char* inicio, char* fin);
 
 #endif
