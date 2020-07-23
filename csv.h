@@ -3,6 +3,7 @@
 
 #include "lista.h"
 #include "strutil.h"
+#include "abb.h"
 
 /**
 Haciendo uso de strutil (split) lee un archivo csv y, línea a línea,
@@ -19,5 +20,7 @@ csv (indicado por la ruta pasada por parámetro) no exista.
 lista_t* csv_crear_estructura(const char* ruta_csv, void* (*constructor) (char**, void*), void* extra);
 
 abb_t* csv_crear_abb(const char* ruta_csv, int (*abb_comparar_clave_t) (const char *, const char *), void (*abb_destruir_dato_t) (void *), void* (*constructor) (char**));
+
+bool csv_guardar_datos(const char* ruta_csv, void* estructura, bool (*funcion_guardar)(void*, char**));
 
 #endif

@@ -1,3 +1,4 @@
+#define _POSIX_C_SOURCE 200809L
 #include "gestion_turnos.h"
 #include "abb.h"
 #include "hash.h"
@@ -8,7 +9,7 @@
 
 typedef struct paciente{
 	char* nombre;
-	size_t ingreso;
+	char* ingreso;
 }paciente_t;
 
 typedef struct doctor{
@@ -29,27 +30,40 @@ struct gestion_turnos{
 	hash_t* turnos;
 };
 
+int doctor_cmp(const char* doc1, const char* doc2){
+	return strcmp(doc1, doc2);
+}
 
-void paciente_destruir(paciente_t* paciente) {
+int paciente_cmp(const void *pac1, const void *pac2){
+	if(((paciente_t*)pac1)->ingreso < ((paciente_t*)pac2)->ingreso)
+		return -1;
+	if(((paciente_t*)pac1)->ingreso > ((paciente_t*)pac2)->ingreso)
+		return 1;
+	return 0;
+}
+
+void paciente_destruir(void* _paciente) {
+	paciente_t* paciente = (paciente_t*)_paciente;
 	free(paciente->nombre);
 	free(paciente->ingreso);
 	free(paciente);
 }
 
-void doctor_destruir(doctor_t* doctor) {
+void doctor_destruir(void* _doctor) {
+	doctor_t* doctor = (doctor_t*)_doctor;
 	free(doctor->nombre);
 	free(doctor->especialidad);
 	free(doctor);
 }
 
-void lista_de_espera_destruir(lista_de_espera_t* lista) {
+void lista_de_espera_destruir(void* _lista) {
+	lista_de_espera_t* lista = (lista_de_espera_t*)_lista;
 	if(lista->urgencias)
 		cola_destruir(lista->urgencias, paciente_destruir);
 	if(lista->regulares)
 		heap_destruir(lista->regulares, paciente_destruir);
 	free(lista);
 }
-
 
 paciente_t* paciente_crear(char** strv){ //constructor pasado en la funcion csv_crear_estructura
 	paciente_t* paciente = malloc(sizeof(paciente_t));
@@ -79,7 +93,7 @@ lista_de_espera_t* lista_de_espera_crear(char** strv) {
 	if(!lista_de_espera) return NULL;
 
 	lista_de_espera->urgencias = cola_crear();
-	lista_de_espera->regulares = heap_crear(cmp_regulares);
+	lista_de_espera->regulares = heap_crear(paciente_cmp);
 
 	if(!lista_de_espera->urgencias || !lista_de_espera->regulares) {
 		lista_de_espera_destruir(lista_de_espera);
@@ -90,8 +104,8 @@ lista_de_espera_t* lista_de_espera_crear(char** strv) {
 	return lista_de_espera;
 }
 
-
-bool guardar_doctor(abb_t* doctores, char** datos) {
+bool guardar_doctor(void* _doctores, char** datos) {
+	abb_t* doctores = (abb_t*)_doctores;
 	doctor_t* doctor = doctor_crear(datos);
 	if(!doctor) return false;
 
@@ -102,7 +116,8 @@ bool guardar_doctor(abb_t* doctores, char** datos) {
 	return true;
 }
 
-bool guardar_paciente(abb_t* pacientes, char** datos) {
+bool guardar_paciente(void* _pacientes, char** datos) {
+	abb_t* pacientes = (abb_t*)_pacientes;
 	paciente_t* paciente = paciente_crear(datos);
 	if(!paciente) return false;
 
@@ -113,7 +128,8 @@ bool guardar_paciente(abb_t* pacientes, char** datos) {
 	return true;
 }
 
-bool guardar_lista_de_espera(hash_t* turnos, char** datos) {
+bool guardar_lista_de_espera(void* _turnos, char** datos) {
+	hash_t* turnos = (hash_t*)_turnos;
 	lista_de_espera_t* lista_de_espera = lista_de_espera_crear(datos);
 	if(!lista_de_espera) return false;
 
@@ -135,10 +151,6 @@ void gestion_turnos_destruir(gestion_turnos_t* gestion_turnos) {
 }
 
 gestion_turnos_t* gestion_turnos_crear(const char* ruta_csv_doctores,const char* ruta_csv_pacientes){
-	//gestion_turnos_t* gestion_turnos = malloc...
-	//pacientes = csv_crear_arbol_pacientes...
-	//doctores = csv_crear_arbol_doctores... dentro de esta funcion no se si ir rellenando el hash de especialidades
-
 	gestion_turnos_t* gestion_turnos = malloc(sizeof(gestion_turnos_t));
 	if(!gestion_turnos) return NULL;
 
@@ -161,4 +173,3 @@ gestion_turnos_t* gestion_turnos_crear(const char* ruta_csv_doctores,const char*
 	}
 	return gestion_turnos;
 }
-

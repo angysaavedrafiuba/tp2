@@ -43,12 +43,6 @@ bool csv_guardar_datos(const char* ruta_csv, void* estructura, bool (*funcion_gu
 	if (!archivo) {
 		return false;
 	}
-	
-	lista_t* lista = lista_crear();
-	if (!lista) {
-		fclose(archivo);
-		return false;
-	}
 
 	char* linea = NULL;
 	size_t c = 0;

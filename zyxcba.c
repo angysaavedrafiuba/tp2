@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-//#include "gestion_turnos.h"
+#include "gestion_turnos.h"
 #include "strutil.h"
 #include "mensajes.h"
 
@@ -74,9 +74,8 @@ int main(int argc, char** argv) {
 	if (argc != 3)
 		return 1;
 
-	procesar_entrada();
 	//gestion_turnos_t* gestion_turnos = gestion_turnos_crear(argv[0], argv[1]);
-
+	procesar_entrada();
 
 	return 0;
 }
