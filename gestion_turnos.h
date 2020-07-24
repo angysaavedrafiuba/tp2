@@ -12,7 +12,7 @@
 typedef struct gestion_turnos gestion_turnos_t;
 
 /*----------------------------------------------------
-                PRIMITIVAS DEL ABB
+                PRIMITIVAS DE GESTION TURNOS
 ------------------------------------------------------*/
 
 //crea el TDA gestion_turnos

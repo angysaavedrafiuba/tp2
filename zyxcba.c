@@ -68,13 +68,19 @@ void procesar_entrada() {
 }
 
 
-
 int main(int argc, char** argv) {
 
-	if (argc != 3)
+	if (argc != 3){
+		printf(ENOENT_CANT_PARAMS, linea);
 		return 1;
+	}
 
-	//gestion_turnos_t* gestion_turnos = gestion_turnos_crear(argv[0], argv[1]);
+	gestion_turnos_t* gestion_turnos = gestion_turnos_crear(argv[0], argv[1]);
+	if(!gestion_turnos){
+		printf(ENOENT_ARCHIVO, linea);
+		return 1;
+	}
+	
 	procesar_entrada();
 
 	return 0;
