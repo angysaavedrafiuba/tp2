@@ -4,6 +4,8 @@
 #include "heap.h"
 #include <string.h>
 #include <stdlib.h>
+#define URGENCIA_1 "URGENTE"
+#define URGENCIA_2 "REGULAR"
 
 struct lista_de_espera{
 	cola_t* urgencias;
@@ -41,5 +43,24 @@ lista_de_espera_t* lista_de_espera_crear(lista_de_espera_comparar_clave_t cmp, l
 	lista_de_espera->cmp = cmp;
 	lista_de_espera->funcion_destruir = funcion_destruir;
 	return lista_de_espera;
+}
+
+bool lista_de_espera_esta_vacia(lista_de_espera_t* lista_de_espera) {
+	return lista_de_espera->total_espera == 0;
+}
+
+bool lista_de_espera_guardar(lista_de_espera_t* lista_de_espera, char* urgencia, void* atendido) {
+	if(strcmp(urgencia, URGENCIA_1) == 0)
+		return cola_encolar(lista_de_espera->urgencias, dato);
+	else
+		return heap_encolar(lista_de_espera->regulares, dato);
+}
+
+void* lista_de_espera_desencolar(lista_de_espera_t* lista_de_espera, char* urgencia) {
+	if(!cola_esta_vacia(lista_de_espera->urgencias))
+		return cola_desencolar(lista_de_espera->urgencias);
+	else
+		return heap_desencolar(lista_de_espera->regulares);
+	
 }
 

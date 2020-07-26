@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#define URGENCIA_1 "URGENTE"
+#define URGENCIA_2 "REGULAR"
 
 struct gestion_turnos{
 	abb_t* atendidos;
@@ -89,5 +91,48 @@ bool agregar_atendedor(gestion_turnos_t* gestion_turnos, char** datos, void* (*c
 		return false;
 	}
 	return abb_guardar(gestion_turnos->atendedores, datos[0], dato);
+}
+
+int pedir_turno(gestion_turnos_t* gestion_turnos, char** parametros) {
+	abb_t* pacientes = gestion_turnos->atendidos;
+	hash_t* turnos = gestion_turnos->turnos;
+
+	char* nombre_paciente = parametros[0];
+	char* especialidad_paciente = parametros[1];
+	char* urgencia_paciente = parametros[2];
+
+	if(!abb_pertenece(pacientes, nombre_paciente))
+		return 1;
+	if(!hash_pertenece(turnos, especialidad_paciente))
+		return 2;
+	if(strcmp(urgencia_paciente, URGENCIA_1) != 0 && strcmp(urgencia_paciente, URGENCIA_2) != 0)
+		return 3;
+	
+	void* paciente = abb_obtener(pacientes, nombre_paciente);
+	if(!paciente) return -1;
+
+	lista_de_espera_t* lista_de_espera = hash_obtener(turnos, especialidad_paciente);
+	if(!lista_de_espera_guardar(lista_de_espera, urgencia_paciente, paciente))
+		return -1;
+
+	return 0;
+}
+
+int atender_siguiente(gestion_turnos_t* gestion_turnos, char** parametros) {
+	char* doctor = parametros[0];
+	char* especialidad = doctor_ver_especialidad(doctor); // a implementar en doctor.c
+	abb_t* doctores = gestion_turnos->atendedores;
+	hash_t* turnos = gestion_turnos->turnos;
+	lista_de_espera_t* lista_de_espera = hash_obtener(turnos, especialidad);
+
+
+	if(!abb_pertenece(doctores, doctor))
+		return 1;
+	if(lista_de_espera_esta_vacia(lista_de_espera))
+		return 2;
+	
+	gestion_turnos->atendido_actual = lista_de_espera_desencolar(lista_de_espera);
+	doctor_agregar_atendido(doctor); // a implementar en doctor.c
+	return 0;
 }
 

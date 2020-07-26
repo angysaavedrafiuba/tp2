@@ -29,9 +29,13 @@ bool agregar_atendido(gestion_turnos_t* gestion_turnos, char** datos, void* (*co
 
 bool agregar_atendedor(gestion_turnos_t* gestion_turnos, char** datos, void* (*constructor) (char**));
 
-//int pedir_turno(char* nombre_paciente, char* especialidad, char* urgencia); //quizá hay que cambiarle el valor de retorno dependiendo de como se impriman los mensajes
+// devuelve 0 si se pudo pedir el turno, 1 si el paciente no existe, 2 si no existe la especialidad,
+// devuelve 3 si no se identifica el grado de urgencia y si no se pudo guardar devuelve -1
+int pedir_turno(gestion_turnos_t* gestion_turnos, char** parametros);
 
-//int atender_siguiente(char* nombre_doctor);
+// devuelve 0 si se pudo atender otro paciente, 1 en caso de que el doctor no exista
+// y devuelve 2 si no hay pacientes para atender
+int atender_siguiente(gestion_turnos_t* gestion_turnos, char** parametros);
 
 //int informe_doctores(char* inicio, char* fin);
 
