@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "csv.h"
+#include "mensajes.h"
 #define SEPARADOR ','
 
 static void eliminar_fin_linea(char* linea) {
@@ -13,10 +14,10 @@ static void eliminar_fin_linea(char* linea) {
 	}
 }
 
-bool csv_cargar_datos(const char* ruta_csv, void* (*cargar) (char**, void*), void* extra){
+bool csv_cargar_datos(const char* ruta_csv, bool (*cargar) (char**, void*), void* extra){
 	FILE* archivo = fopen(ruta_csv, "r");
 	if (!archivo) {
-		printf(ENOENT_ARCHIVO, linea);
+		printf(ENOENT_ARCHIVO, ruta_csv);
 		return false;
 	}
 

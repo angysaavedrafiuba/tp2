@@ -41,15 +41,15 @@ clinica_t* clinica_crear(char* csv_doctores, char* csv_pacientes){
 	clinica_t* clinica = malloc(sizeof(clinica_t));
 	if(!clinica) return NULL;
 
-	clinica->gestion_turnos = gestion_turnos_crear(doctor_cmp, (void (*)(void *))doctor_destruir, paciente_cmp, (void (*)(void *))paciente_destruir);
+	clinica->gestion_turnos = gestion_turnos_crear(doctor_cmp, (void (*)(void *))doctor_destruir, strcmp, (void (*)(void *))paciente_destruir);
 	if (!clinica->gestion_turnos){
 		free(clinica);
 		return NULL;
 	}
 
-	if(!csv_cargar_datos(csv_pacientes, clinica_agregar_paciente, clinica->gestion_turnos))
-		return NULL;
 	if(!csv_cargar_datos(csv_doctores, clinica_agregar_doctor, clinica->gestion_turnos))
+		return NULL;
+	if(!csv_cargar_datos(csv_pacientes, clinica_agregar_paciente, clinica->gestion_turnos))
 		return NULL;
 
 	return clinica;
