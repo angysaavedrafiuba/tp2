@@ -16,6 +16,4 @@ void lista_de_espera_destruir(lista_de_espera_t* lista_de_espera);
 
 size_t lista_de_espera_cantidad_total(lista_de_espera_t* lista);
 
-//bool guardar_lista_de_espera(hash_t* listas_de_espera, char** datos_lista_de_espera);
-
 #endif

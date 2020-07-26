@@ -30,14 +30,4 @@ void doctor_destruir(doctor_t* doctor) {
 	free(doctor->especialidad);
 	free(doctor);
 }
-/*
-bool guardar_doctor(abb_t* doctores, char** datos_doctor) {
-	doctor_t* doctor = doctor_crear(datos_doctor);
-	if(!doctor) return false;
 
-	if(!abb_guardar(doctores, doctor->nombre, doctor)) {
-		doctor_destruir(doctor);
-		return false;
-	}
-	return true;
-}*/

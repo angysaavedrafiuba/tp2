@@ -43,14 +43,3 @@ lista_de_espera_t* lista_de_espera_crear(lista_de_espera_comparar_clave_t cmp, l
 	return lista_de_espera;
 }
 
-/*
-bool guardar_lista_de_espera(hash_t* listas, char** datos_lista_de_espera) {
-	lista_de_espera_t* lista_de_espera = lista_de_espera_crear();
-	if(!lista_de_espera) return false;
-
-	if(!hash_guardar(turnos, datos_especialidad[1], lista_de_espera)) {
-		lista_de_espera_destruir(lista_de_espera);
-		return false;
-	}
-	return true;
-}*/
