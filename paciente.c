@@ -8,12 +8,8 @@ struct paciente{
 	char* ingreso;
 };
 
-int paciente_cmp(const paciente_t *pac1, const paciente_t *pac2){
-	if(pac1->ingreso < pac2->ingreso)
-		return -1;
-	if(pac1->ingreso > pac2->ingreso)
-		return 1;
-	return 0;
+int paciente_cmp(const char *pac1, const char *pac2){
+	return strcmp(pac1, pac2);
 }
 
 paciente_t* paciente_crear(char** datos_paciente){

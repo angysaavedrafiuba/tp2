@@ -3,12 +3,67 @@
 #include <string.h>
 #include <stdlib.h>
 #include "gestion_turnos.h"
+#include "paciente.h"
+#include "doctor.h"
 #include "strutil.h"
 #include "mensajes.h"
 
 #define COMANDO_PEDIR_TURNO "PEDIR_TURNO"
 #define COMANDO_ATENDER "ATENDER_SIGUIENTE"
 #define COMANDO_INFORME "INFORME"
+
+typedef struct clinica{
+	gestion_turnos_t* gestion_turnos;
+}clinica_t;
+
+bool clinica_agregar_paciente(char** datos, void* gestion){
+	for(size_t i = 0; i<2; i++ )
+		if(!datos[i]) return false;
+
+    char *resto = NULL;
+    strtol(datos[1], &resto, 10);
+    if(resto != NULL){
+    	printf(ENOENT_ANIO, datos[1]);
+    	return false;
+    }
+
+    return agregar_atendido((gestion_turnos_t*)gestion, datos,(void * (*)(char **))paciente_crear);
+}
+
+bool clinica_agregar_doctor(char** datos, void* gestion){
+	for(size_t i = 0; i<2; i++ )
+		if(!datos[i]) return false;
+
+    return agregar_atendedor((gestion_turnos_t*)gestion, datos,(void * (*)(char **))doctor_crear);
+}
+
+clinica_t* clinica_crear(char* csv_doctores, char* csv_pacientes){
+	clinica_t* clinica = malloc(sizeof(clinica_t));
+	if(!clinica) return NULL;
+
+	clinica->gestion_turnos = gestion_turnos_crear(doctor_cmp, (void (*)(void *))doctor_destruir, paciente_cmp, (void (*)(void *))paciente_destruir);
+	if (!clinica->gestion_turnos){
+		free(clinica);
+		return NULL;
+	}
+
+	if(!csv_cargar_datos(csv_pacientes, clinica_agregar_paciente, clinica->gestion_turnos))
+		return NULL;
+	if(!csv_cargar_datos(csv_doctores, clinica_agregar_doctor, clinica->gestion_turnos))
+		return NULL;
+
+	return clinica;
+}
+
+void ejecutar_comando(const char* comando, char** parametros){
+	if (strcmp(comando, COMANDO_PEDIR_TURNO) == 0) {
+
+	} else if (strcmp(comando, COMANDO_ATENDER) == 0) {
+
+	} else if (strcmp(comando, COMANDO_INFORME) == 0) {
+		
+	}
+}
 
 void procesar_comando(const char* comando, char** parametros) {
 	if (strcmp(comando, COMANDO_PEDIR_TURNO) == 0) {
@@ -18,14 +73,14 @@ void procesar_comando(const char* comando, char** parametros) {
 				return;
 			}
 		}
-		//pedir_turno(parametros[0], parametros[1], parametros[2]);
+		ejecutar_comando(comando, parametros);
 
 	} else if (strcmp(comando, COMANDO_ATENDER) == 0) {
 		if (!parametros[0]){
 			printf(ENOENT_PARAMS, comando);
 			return;
 		}
-		//atender_siguiente(parametros[0]);
+		ejecutar_comando(comando, parametros);
 
 	} else if (strcmp(comando, COMANDO_INFORME) == 0) {
 		for (int i = 0; i < 2; i++){
@@ -34,7 +89,7 @@ void procesar_comando(const char* comando, char** parametros) {
 				return;
 			}
 		}
-		//informe_doctores(parametros[0], parametros[1]);
+		ejecutar_comando(comando, parametros);
 
 	} else {
 		printf(ENOENT_CMD, comando);
@@ -71,16 +126,13 @@ void procesar_entrada() {
 int main(int argc, char** argv) {
 
 	if (argc != 3){
-		printf(ENOENT_CANT_PARAMS, linea);
-		return 1;
-	}
-
-	gestion_turnos_t* gestion_turnos = gestion_turnos_crear(argv[0], argv[1]);
-	if(!gestion_turnos){
-		printf(ENOENT_ARCHIVO, linea);
+		printf(ENOENT_CANT_PARAMS);
 		return 1;
 	}
 	
+	clinica_t* clinica = clinica_crear(argv[0], argv[1]);
+	if (!clinica) return 1;
+
 	procesar_entrada();
 
 	return 0;

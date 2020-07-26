@@ -9,8 +9,8 @@ struct doctor{
 	size_t pacientes_atendidos;
 };
 
-int doctor_cmp(const doctor_t *doc1, const doctor_t *doc2){
-	return strcmp(doc1->nombre, doc2->nombre);
+int doctor_cmp(const char *doc1, const char *doc2){
+	return strcmp(doc1, doc2);
 }
 
 doctor_t* doctor_crear(char** datos_doctor){ 

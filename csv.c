@@ -13,6 +13,29 @@ static void eliminar_fin_linea(char* linea) {
 	}
 }
 
+bool csv_cargar_datos(const char* ruta_csv, void* (*cargar) (char**, void*), void* extra){
+	FILE* archivo = fopen(ruta_csv, "r");
+	if (!archivo) {
+		printf(ENOENT_ARCHIVO, linea);
+		return false;
+	}
+
+	char* linea = NULL;
+	size_t c = 0;
+	while (getline(&linea, &c, archivo) > 0) {
+		eliminar_fin_linea(linea);
+		char** campos = split(linea, SEPARADOR);
+		if (!cargar(campos, extra)){
+			fclose(archivo);
+			return false;
+		}
+		free_strv(campos);
+	}
+	free(linea);
+	fclose(archivo);
+	return true;
+}
+
 /*lista_t* csv_crear_estructura(const char* ruta_csv, void* (*creador) (char**, void*), void* extra) {
 	FILE* archivo = fopen(ruta_csv, "r");
 	if (!archivo) {
@@ -37,7 +60,7 @@ static void eliminar_fin_linea(char* linea) {
 	fclose(archivo);
 	return lista;
 }*/
-
+/*
 bool csv_guardar_datos(const char* ruta_csv, void* estructura, bool (*funcion_guardar)(void* estructura, char** strv)) {
 	FILE* archivo = fopen(ruta_csv, "r");
 	if (!archivo) {
@@ -56,4 +79,4 @@ bool csv_guardar_datos(const char* ruta_csv, void* estructura, bool (*funcion_gu
 	free(linea);
 	fclose(archivo);
 	return true;
-}
+}*/

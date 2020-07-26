@@ -55,13 +55,13 @@ size_t cantidad_atendidos_en_espera(gestion_turnos_t* gestion_turnos, char* espe
 
 bool agregar_atendido(gestion_turnos_t* gestion_turnos, char** datos, void* (*constructor) (char**)){
 	void* dato = constructor(datos);
-	if (!dato) return NULL;
+	if (!dato) return false;
 	return abb_guardar(gestion_turnos->atendidos, datos[0], dato);
 }
 
 bool agregar_atendedor(gestion_turnos_t* gestion_turnos, char** datos, void* (*constructor) (char**)){
 	void* dato = constructor(datos);
-	if (!dato) return NULL;
+	if (!dato) return false;
 	return abb_guardar(gestion_turnos->atendedores, datos[0], dato);
 }
 
