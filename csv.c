@@ -26,7 +26,10 @@ bool csv_cargar_datos(const char* ruta_csv, bool (*cargar) (char**, void*), void
 	while (getline(&linea, &c, archivo) > 0) {
 		eliminar_fin_linea(linea);
 		char** campos = split(linea, SEPARADOR);
+		printf("VA A CARGAR UN DATO\n");
 		if (!cargar(campos, extra)){
+			free_strv(campos);
+			free(linea);
 			fclose(archivo);
 			return false;
 		}

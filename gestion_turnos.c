@@ -8,15 +8,26 @@
 //#include "mensajes.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 struct gestion_turnos{
 	abb_t* atendidos;
 	abb_t* atendedores;
 	hash_t* turnos;
-	void* atendido_actual;
+	//void* atendido_actual;
 };
 
+bool imprimir(const char *clave, void *dato, void *extra){
+	printf("CLAVE EN ABB: %s\n", clave);
+	return true;
+}
+
 void gestion_turnos_destruir(gestion_turnos_t* gestion_turnos) {
+	printf("ENTRA EN DESTRUCCION GESTION DE TURNOS\n");
+	abb_in_order(gestion_turnos->atendedores, imprimir, NULL);
+	abb_in_order(gestion_turnos->atendidos, imprimir, NULL);
+
+	printf("YA IMPRIMIO LO QUE HABIA EN LOS ABBS\n");
 	if(gestion_turnos->atendedores)
 		abb_destruir(gestion_turnos->atendedores);
 	if(gestion_turnos->atendidos)
@@ -37,7 +48,7 @@ gestion_turnos_t* gestion_turnos_crear(gestion_turnos_comparar_clave_t cmp_atend
 	gestion_turnos->atendedores = abb_crear(cmp_atendedor, dst_atendedor);
 	gestion_turnos->atendidos = abb_crear(cmp_atendido, dst_atendido);
 	gestion_turnos->turnos = hash_crear((hash_destruir_dato_t)lista_de_espera_destruir);
-	gestion_turnos->atendido_actual = NULL;
+	//gestion_turnos->atendido_actual = NULL;
 
 	if(!gestion_turnos->atendedores || !gestion_turnos->atendidos || !gestion_turnos->turnos) {
 		gestion_turnos_destruir(gestion_turnos);
