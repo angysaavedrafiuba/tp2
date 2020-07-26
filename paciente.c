@@ -32,7 +32,7 @@ void paciente_destruir(paciente_t* paciente) {
 	free(paciente->ingreso);
 	free(paciente);
 }
-
+/*
 bool guardar_paciente(abb_t* pacientes, char** datos) {
 	paciente_t* paciente = paciente_crear(datos);
 	if(!paciente) return false;
@@ -42,4 +42,4 @@ bool guardar_paciente(abb_t* pacientes, char** datos) {
 		return false;
 	}
 	return true;
-}
+}*/

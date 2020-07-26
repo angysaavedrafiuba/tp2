@@ -11,20 +11,28 @@
 
 typedef struct gestion_turnos gestion_turnos_t;
 
+typedef void (*gestion_turnos_destruir_dato_t)(void *);
+
+typedef int (*gestion_turnos_comparar_clave_t) (const char *, const char *);
 /*----------------------------------------------------
                 PRIMITIVAS DE GESTION TURNOS
 ------------------------------------------------------*/
 
 //crea el TDA gestion_turnos
-gestion_turnos_t* gestion_turnos_crear(const char* ruta_csv_doctores,const char* ruta_csv_pacientes);
+gestion_turnos_t* gestion_turnos_crear(gestion_turnos_comparar_clave_t cmp_atendedor, gestion_turnos_destruir_dato_t dst_atendedor, gestion_turnos_comparar_clave_t cmp_atendido, gestion_turnos_destruir_dato_t dst_atendido);
 
-//esta funcion imprime
-void pedir_turno(char* nombre_paciente, char* especialidad, char* urgencia); //quizá hay que cambiarle el valor de retorno dependiendo de como se impriman los mensajes
+void gestion_turnos_destruir(gestion_turnos_t* gestion_turnos);
 
-//esta funcion imprime
-void atender_siguiente(char* nombre_doctor);
+size_t cantidad_pacientes_en_espera(gestion_turnos_t* gestion_turnos, char* especialidad);
 
-//esta funcion imprime
-void informe_doctores(char* inicio, char* fin);
+bool agregar_atendido(gestion_turnos_t* gestion_turnos, char** datos, void* (*constructor) (char**));
+
+bool agregar_atendedor(gestion_turnos_t* gestion_turnos, char** datos, void* (*constructor) (char**));
+
+//void pedir_turno(char* nombre_paciente, char* especialidad, char* urgencia); //quizá hay que cambiarle el valor de retorno dependiendo de como se impriman los mensajes
+
+//void atender_siguiente(char* nombre_doctor);
+
+//void informe_doctores(char* inicio, char* fin);
 
 #endif

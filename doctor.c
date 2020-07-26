@@ -9,6 +9,10 @@ struct doctor{
 	size_t pacientes_atendidos;
 };
 
+int doctor_cmp(const doctor_t *doc1, const doctor_t *doc2){
+	return strcmp(doc1->nombre, doc2->nombre);
+}
+
 doctor_t* doctor_crear(char** datos_doctor){ 
 	doctor_t* doctor = malloc(sizeof(doctor_t));
 
@@ -26,7 +30,7 @@ void doctor_destruir(doctor_t* doctor) {
 	free(doctor->especialidad);
 	free(doctor);
 }
-
+/*
 bool guardar_doctor(abb_t* doctores, char** datos_doctor) {
 	doctor_t* doctor = doctor_crear(datos_doctor);
 	if(!doctor) return false;
@@ -36,4 +40,4 @@ bool guardar_doctor(abb_t* doctores, char** datos_doctor) {
 		return false;
 	}
 	return true;
-}
+}*/
