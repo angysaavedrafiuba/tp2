@@ -95,7 +95,7 @@ void ejecutar_comando_atender(clinica_t* clinica, char** parametros){
 
 
 void ejecutar_comando_informe(clinica_t* clinica, char** parametros){
-	
+	lista_t* lista = informe_atendedores(clinica->gestion_turnos, parametros[0], parametros[1]);
 }
 
 void ejecutar_comando(clinica_t* clinica, const char* comando, char** parametros){

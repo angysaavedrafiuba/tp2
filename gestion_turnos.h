@@ -38,6 +38,6 @@ int pedir_turno(gestion_turnos_t* gestion_turnos, char* nombre, char* categoria,
 // y devuelve 2 si no hay pacientes para atender
 int atender_siguiente(gestion_turnos_t* gestion_turnos, char* nombre, char* categoria);
 
-//int informe_doctores(char* inicio, char* fin);
+lista_t* informe_atendedores(gestion_turnos_t* gestion_turnos, char* inicio, char* fin);
 
 #endif

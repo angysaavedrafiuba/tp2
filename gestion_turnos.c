@@ -141,3 +141,6 @@ int atender_siguiente(gestion_turnos_t* gestion_turnos, char* nombre, char* cate
 	return 0;
 }
 
+lista_t* informe_atendedores(gestion_turnos_t* gestion_turnos, char* inicio, char* fin){
+	return abb_ver_lista(gestion_turnos->atendedores, inicio, fin);
+}
