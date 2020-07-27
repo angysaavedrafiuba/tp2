@@ -16,4 +16,8 @@ char* doctor_ver_especialidad(doctor_t* doctor);
 
 void doctor_agregar_atendido(doctor_t* doctor);
 
+char* doctor_ver_nombre(doctor_t* doctor);
+
+size_t doctor_ver_cant_atendidos(doctor_t* doctor);
+
 #endif

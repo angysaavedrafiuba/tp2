@@ -103,44 +103,48 @@ void* gestion_turnos_obtener_atendedor(gestion_turnos_t *gestion_turnos, char* n
 	return abb_obtener(gestion_turnos->atendedores, nombre);
 }
 
-int pedir_turno(gestion_turnos_t* gestion_turnos, char* nombre, char* categoria, char* prioridad){
+bool pedir_turno(gestion_turnos_t* gestion_turnos, char* nombre, char* categoria, char* prioridad){
 	abb_t* pacientes = gestion_turnos->atendidos;
 	hash_t* turnos = gestion_turnos->turnos;
 
-	if(!abb_pertenece(pacientes, nombre))
-		return 1;
-	if(!hash_pertenece(turnos, categoria))
-		return 2;
-	if(strcmp(prioridad, URGENCIA_1) != 0 && strcmp(prioridad, URGENCIA_2) != 0)
-		return 3;
-	
 	void* paciente = abb_obtener(pacientes, nombre);
-	if(!paciente) return -1; //creo q esto nunca va a fallar
-
 	lista_de_espera_t* lista_de_espera = hash_obtener(turnos, categoria);
-	if(!lista_de_espera_guardar(lista_de_espera, prioridad, paciente))
-		return -1;
 
-	return 0;
+	return lista_de_espera_guardar(lista_de_espera, prioridad, paciente);
 }
 
-int atender_siguiente(gestion_turnos_t* gestion_turnos, char* nombre, char* categoria) {
-	abb_t* doctores = gestion_turnos->atendedores;
+bool atender_siguiente(gestion_turnos_t* gestion_turnos, char* nombre, char* categoria) {
 	hash_t* turnos = gestion_turnos->turnos;
 	lista_de_espera_t* lista_de_espera = hash_obtener(turnos, categoria);
-
-	if(!abb_pertenece(doctores, nombre))
-		return 1;
-	if(lista_de_espera_esta_vacia(lista_de_espera))
-		return 2;
 
 	if(gestion_turnos->atendido_actual)
 		gestion_turnos->dst_atendido(gestion_turnos->atendido_actual);
 	
 	gestion_turnos->atendido_actual = lista_de_espera_desencolar(lista_de_espera);
-	return 0;
+	
+	return gestion_turnos->atendido_actual;
 }
 
 lista_t* informe_atendedores(gestion_turnos_t* gestion_turnos, char* inicio, char* fin){
 	return abb_ver_lista(gestion_turnos->atendedores, inicio, fin);
+}
+
+bool atendido_existe(gestion_turnos_t* gestion_turnos, char* nombre){
+	return abb_pertenece(gestion_turnos->atendidos, nombre);
+}
+
+bool categoria_existe(gestion_turnos_t* gestion_turnos, char* categoria){
+	return hash_pertenece(gestion_turnos->turnos, categoria);
+}
+
+bool prioridad_existe(gestion_turnos_t* gestion_turnos, char* prioridad){
+	return !strcmp(prioridad, URGENCIA_1) || !strcmp(prioridad, URGENCIA_2);
+}
+
+void* obtener_atendido_actual(gestion_turnos_t* gestion_turnos){
+	return gestion_turnos->atendido_actual;
+}
+
+size_t cantidad_atendedores(gestion_turnos_t* gestion_turnos){
+	return abb_cantidad(gestion_turnos->atendedores);
 }

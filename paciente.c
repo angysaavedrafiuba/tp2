@@ -32,3 +32,7 @@ void paciente_destruir(paciente_t* paciente) {
 	free(paciente->ingreso);
 	free(paciente);
 }
+
+char* obtener_nombre_paciente(paciente_t* paciente){
+	return paciente->nombre;
+}

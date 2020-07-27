@@ -23,21 +23,27 @@ gestion_turnos_t* gestion_turnos_crear(gestion_turnos_destruir_dato_t dst_atende
 
 void gestion_turnos_destruir(gestion_turnos_t* gestion_turnos);
 
-size_t cantidad_pacientes_en_espera(gestion_turnos_t* gestion_turnos, char* especialidad);
+size_t cantidad_atendidos_en_espera(gestion_turnos_t* gestion_turnos, char* especialidad);
 
 bool agregar_atendido(gestion_turnos_t* gestion_turnos, char** datos, void* (*constructor) (char**));
 
 bool agregar_atendedor(gestion_turnos_t* gestion_turnos, char** datos, void* (*constructor) (char**));
 
 void* gestion_turnos_obtener_atendedor(gestion_turnos_t *gestion_turnos, char* nombre);
-// devuelve 0 si se pudo pedir el turno, 1 si el paciente no existe, 2 si no existe la especialidad,
-// devuelve 3 si no se identifica el grado de urgencia y si no se pudo guardar devuelve -1
-int pedir_turno(gestion_turnos_t* gestion_turnos, char* nombre, char* categoria, char* prioridad);
 
-// devuelve 0 si se pudo atender otro paciente, 1 en caso de que el doctor no exista
-// y devuelve 2 si no hay pacientes para atender
-int atender_siguiente(gestion_turnos_t* gestion_turnos, char* nombre, char* categoria);
+bool pedir_turno(gestion_turnos_t* gestion_turnos, char* nombre, char* categoria, char* prioridad);
+
+bool atender_siguiente(gestion_turnos_t* gestion_turnos, char* nombre, char* categoria);
 
 lista_t* informe_atendedores(gestion_turnos_t* gestion_turnos, char* inicio, char* fin);
 
+bool atendido_existe(gestion_turnos_t* gestion_turnos, char* nombre);
+
+bool categoria_existe(gestion_turnos_t* gestion_turnos, char* categoria);
+
+bool prioridad_existe(gestion_turnos_t* gestion_turnos, char* prioridad);
+
+void* obtener_atendido_actual(gestion_turnos_t* gestion_turnos);
+
+size_t cantidad_atendedores(gestion_turnos_t* gestion_turnos);
 #endif
