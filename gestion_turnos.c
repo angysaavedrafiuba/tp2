@@ -27,6 +27,8 @@ bool imprimir(const char *clave, void *dato, void *extra){
 }
 
 void gestion_turnos_destruir(gestion_turnos_t* gestion_turnos) {
+
+	//BLOQUE DE CODIGO SOLO PARA PRUEBAS
 	abb_in_order(gestion_turnos->atendedores, imprimir, NULL);
 	abb_in_order(gestion_turnos->atendidos, imprimir, NULL);
 
@@ -38,6 +40,10 @@ void gestion_turnos_destruir(gestion_turnos_t* gestion_turnos) {
 	}
 
 	hash_iter_destruir(iter);
+	//END BLOQUE DE CODIGO SOLO PARA PRUEBAS
+
+	if(gestion_turnos->atendido_actual)
+		gestion_turnos->dst_atendido(gestion_turnos->atendido_actual);
 
 	if(gestion_turnos->atendedores)
 		abb_destruir(gestion_turnos->atendedores);
@@ -93,46 +99,45 @@ bool agregar_atendedor(gestion_turnos_t* gestion_turnos, char** datos, void* (*c
 	return abb_guardar(gestion_turnos->atendedores, datos[0], dato);
 }
 
-int pedir_turno(gestion_turnos_t* gestion_turnos, char** parametros) {
+void* gestion_turnos_obtener_atendedor(gestion_turnos_t *gestion_turnos, char* nombre){
+	return abb_obtener(gestion_turnos->atendedores, nombre);
+}
+
+int pedir_turno(gestion_turnos_t* gestion_turnos, char* nombre, char* categoria, char* prioridad){
 	abb_t* pacientes = gestion_turnos->atendidos;
 	hash_t* turnos = gestion_turnos->turnos;
 
-	char* nombre_paciente = parametros[0];
-	char* especialidad_paciente = parametros[1];
-	char* urgencia_paciente = parametros[2];
-
-	if(!abb_pertenece(pacientes, nombre_paciente))
+	if(!abb_pertenece(pacientes, nombre))
 		return 1;
-	if(!hash_pertenece(turnos, especialidad_paciente))
+	if(!hash_pertenece(turnos, categoria))
 		return 2;
-	if(strcmp(urgencia_paciente, URGENCIA_1) != 0 && strcmp(urgencia_paciente, URGENCIA_2) != 0)
+	if(strcmp(prioridad, URGENCIA_1) != 0 && strcmp(prioridad, URGENCIA_2) != 0)
 		return 3;
 	
-	void* paciente = abb_obtener(pacientes, nombre_paciente);
-	if(!paciente) return -1;
+	void* paciente = abb_obtener(pacientes, nombre);
+	if(!paciente) return -1; //creo q esto nunca va a fallar
 
-	lista_de_espera_t* lista_de_espera = hash_obtener(turnos, especialidad_paciente);
-	if(!lista_de_espera_guardar(lista_de_espera, urgencia_paciente, paciente))
+	lista_de_espera_t* lista_de_espera = hash_obtener(turnos, categoria);
+	if(!lista_de_espera_guardar(lista_de_espera, prioridad, paciente))
 		return -1;
 
 	return 0;
 }
 
-int atender_siguiente(gestion_turnos_t* gestion_turnos, char** parametros) {
-	char* doctor = parametros[0];
-	char* especialidad = doctor_ver_especialidad(doctor); // a implementar en doctor.c
+int atender_siguiente(gestion_turnos_t* gestion_turnos, char* nombre, char* categoria) {
 	abb_t* doctores = gestion_turnos->atendedores;
 	hash_t* turnos = gestion_turnos->turnos;
-	lista_de_espera_t* lista_de_espera = hash_obtener(turnos, especialidad);
+	lista_de_espera_t* lista_de_espera = hash_obtener(turnos, categoria);
 
-
-	if(!abb_pertenece(doctores, doctor))
+	if(!abb_pertenece(doctores, nombre))
 		return 1;
 	if(lista_de_espera_esta_vacia(lista_de_espera))
 		return 2;
+
+	if(gestion_turnos->atendido_actual)
+		gestion_turnos->dst_atendido(gestion_turnos->atendido_actual);
 	
 	gestion_turnos->atendido_actual = lista_de_espera_desencolar(lista_de_espera);
-	doctor_agregar_atendido(doctor); // a implementar en doctor.c
 	return 0;
 }
 

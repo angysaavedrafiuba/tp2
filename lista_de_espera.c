@@ -51,12 +51,15 @@ bool lista_de_espera_esta_vacia(lista_de_espera_t* lista_de_espera) {
 
 bool lista_de_espera_guardar(lista_de_espera_t* lista_de_espera, char* urgencia, void* atendido) {
 	if(strcmp(urgencia, URGENCIA_1) == 0)
-		return cola_encolar(lista_de_espera->urgencias, dato);
+		return cola_encolar(lista_de_espera->urgencias, atendido);
 	else
-		return heap_encolar(lista_de_espera->regulares, dato);
+		return heap_encolar(lista_de_espera->regulares, atendido);
 }
 
-void* lista_de_espera_desencolar(lista_de_espera_t* lista_de_espera, char* urgencia) {
+void* lista_de_espera_desencolar(lista_de_espera_t* lista_de_espera) {
+	if(lista_de_espera_esta_vacia(lista_de_espera)) return NULL;
+
+	lista_de_espera->total_espera--;
 	if(!cola_esta_vacia(lista_de_espera->urgencias))
 		return cola_desencolar(lista_de_espera->urgencias);
 	else

@@ -67,17 +67,48 @@ clinica_t* clinica_crear(char* csv_doctores, char* csv_pacientes){
 	return clinica;
 }
 
-void ejecutar_comando(const char* comando, char** parametros){
-	if (strcmp(comando, COMANDO_PEDIR_TURNO) == 0) {
+void ejecutar_comando_pedir_turno(clinica_t* clinica, char** parametros){
+	int mensaje = pedir_turno(clinica->gestion_turnos, parametros[0], parametros[1], parametros[2]);
 
-	} else if (strcmp(comando, COMANDO_ATENDER) == 0) {
+	switch(mensaje){
+		case 0: break;
+		case 1: break;
+		case 2: break;
+		case 3: break;
+	}
+}
+void ejecutar_comando_atender(clinica_t* clinica, char** parametros){
+	doctor_t* doctor = gestion_turnos_obtener_atendedor(clinica->gestion_turnos, parametros[0]);
+	char* especialidad = doctor_ver_especialidad(doctor);
+	int mensaje = atender_siguiente(clinica->gestion_turnos, parametros[0], especialidad);
 
-	} else if (strcmp(comando, COMANDO_INFORME) == 0) {
-		
+	switch(mensaje){
+		case 0:
+		doctor_agregar_atendido(doctor);
+		break;
+		case 1: break;
+		case 2: break;
+		case 3: break;
+
 	}
 }
 
-void procesar_comando(const char* comando, char** parametros) {
+
+void ejecutar_comando_informe(clinica_t* clinica, char** parametros){
+	
+}
+
+void ejecutar_comando(clinica_t* clinica, const char* comando, char** parametros){
+	if (strcmp(comando, COMANDO_PEDIR_TURNO) == 0) {
+		ejecutar_comando_pedir_turno( clinica, parametros);
+	} else if (strcmp(comando, COMANDO_ATENDER) == 0) {
+		ejecutar_comando_atender(clinica, parametros);
+	} else if (strcmp(comando, COMANDO_INFORME) == 0) {
+		ejecutar_comando_informe(clinica, parametros);
+	}
+}
+
+void procesar_comando(clinica_t* clinica, const char* comando, char** parametros) {
 	if (strcmp(comando, COMANDO_PEDIR_TURNO) == 0) {
 		for (int i = 0; i < 3; i++){
 			if (!parametros[i]){
@@ -85,14 +116,14 @@ void procesar_comando(const char* comando, char** parametros) {
 				return;
 			}
 		}
-		ejecutar_comando(comando, parametros);
+		ejecutar_comando(clinica, comando, parametros);
 
 	} else if (strcmp(comando, COMANDO_ATENDER) == 0) {
 		if (!parametros[0]){
 			printf(ENOENT_PARAMS, comando);
 			return;
 		}
-		ejecutar_comando(comando, parametros);
+		ejecutar_comando(clinica, comando, parametros);
 
 	} else if (strcmp(comando, COMANDO_INFORME) == 0) {
 		for (int i = 0; i < 2; i++){
@@ -101,7 +132,7 @@ void procesar_comando(const char* comando, char** parametros) {
 				return;
 			}
 		}
-		ejecutar_comando(comando, parametros);
+		ejecutar_comando(clinica, comando, parametros);
 
 	} else {
 		printf(ENOENT_CMD, comando);
@@ -115,7 +146,7 @@ void eliminar_fin_linea(char* linea) {
 	}
 }
 
-void procesar_entrada() {
+void procesar_entrada(clinica_t* clinica) {
 	char* linea = NULL;
 	size_t c = 0;
 	while (getline(&linea, &c, stdin) > 0) {
@@ -127,7 +158,7 @@ void procesar_entrada() {
 			continue;
 		}
 		char** parametros = split(campos[1], ',');
-		procesar_comando(campos[0], parametros);
+		procesar_comando(clinica, campos[0], parametros);
 		free_strv(parametros);
 		free_strv(campos);
 	}
@@ -145,7 +176,7 @@ int main(int argc, char** argv) {
 	clinica_t* clinica = clinica_crear(argv[1], argv[2]);
 	if (!clinica) return 1;
 
-	procesar_entrada();
+	procesar_entrada(clinica);
 
 	clinica_destruir(clinica);
 

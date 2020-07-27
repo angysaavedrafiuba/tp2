@@ -31,3 +31,10 @@ void doctor_destruir(doctor_t* doctor) {
 	free(doctor);
 }
 
+char* doctor_ver_especialidad(doctor_t* doctor){
+	return doctor->especialidad;
+}
+
+void doctor_agregar_atendido(doctor_t* doctor){
+	doctor->pacientes_atendidos++;
+}
