@@ -73,8 +73,10 @@ size_t abb_cantidad(abb_t *arbol);
 */
 void abb_destruir(abb_t *arbol);
 
-/* devuelve una lista de todos los datos ordenados desde inicio
-   hasta fin
+/* devuelve una lista de todos los datos ordenados desde "inicio"
+   hasta "fin"
+   si "inicio" es vacío, agrega los datos desde el menor elemento hasta "fin"
+   si "fin" es vacío, agrega los datos desde "inicio" hasta el mayor elemento
 */
 lista_t* abb_ver_lista(abb_t* arbol, char* inicio, char* fin);
 

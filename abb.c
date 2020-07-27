@@ -271,20 +271,23 @@ void abb_ver_lista_rec(nodo_abb_t* raiz, lista_t* lista, char* inicio, char* fin
   if(cmp_inicio >= 0) {
     abb_ver_lista_rec(raiz->izq, lista, inicio, fin, comparar);
 
-    if(cmp_fin <= 0) {
+    if(cmp_fin <= 0 || strcmp(fin, "") == 0) {
       lista_insertar_ultimo(lista, raiz->dato);
       abb_ver_lista_rec(raiz->der, lista, inicio, fin, comparar);
     }
   }
   else if(cmp_inicio < 0) {
-    if(cmp_fin < 0) {
+    if(cmp_fin < 0 || strcmp(fin, "") == 0) {
       abb_ver_lista_rec(raiz->der, lista, inicio, fin, comparar);
     }
   }
 }
 
 lista_t* abb_ver_lista(abb_t* arbol, char* inicio, char* fin) {
-  if(arbol->comparar(inicio, fin) > 0) return NULL;
+  if(arbol->comparar(inicio, fin) > 0) {
+    if(strcmp(fin, "") != 0)
+      return NULL;
+  }
 
   lista_t* lista = lista_crear();
   if(!lista) return NULL;
