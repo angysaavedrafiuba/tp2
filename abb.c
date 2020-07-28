@@ -262,25 +262,33 @@ void *abb_borrar(abb_t *arbol, const char *clave) {
 }
 //********************** abb ver lista ********************
 
+
 void abb_ver_lista_rec(nodo_abb_t* raiz, lista_t* lista, char* inicio, char* fin, abb_comparar_clave_t comparar) {
   if(!raiz) return;
 
-  int cmp_inicio = comparar(raiz->clave, inicio);
-  int cmp_fin = comparar(raiz->clave, fin);
+  int cmp_inicio = comparar(inicio, raiz->clave);
+  int cmp_fin = comparar(fin, raiz->clave);
 
   if(cmp_inicio >= 0) {
+    if(cmp_inicio == 0)
+      lista_insertar_ultimo(lista, raiz->dato);
+    if(cmp_fin > 0 || strcmp(fin, "") == 0)
+      abb_ver_lista_rec(raiz->der, lista, inicio, fin, comparar);
+    
+  }
+  else if(cmp_inicio < 0) {
     abb_ver_lista_rec(raiz->izq, lista, inicio, fin, comparar);
-
-    if(cmp_fin <= 0 || strcmp(fin, "") == 0) {
+    if(cmp_fin == 0) {
+      lista_insertar_ultimo(lista, raiz->dato);
+      return;
+    }
+    if(cmp_fin > 0 || strcmp(fin, "") == 0) {
       lista_insertar_ultimo(lista, raiz->dato);
       abb_ver_lista_rec(raiz->der, lista, inicio, fin, comparar);
     }
   }
-  else if(cmp_inicio < 0) {
-    if(cmp_fin < 0 || strcmp(fin, "") == 0) {
-      abb_ver_lista_rec(raiz->der, lista, inicio, fin, comparar);
-    }
-  }
+
+  return;
 }
 
 lista_t* abb_ver_lista(abb_t* arbol, char* inicio, char* fin) {
@@ -291,10 +299,6 @@ lista_t* abb_ver_lista(abb_t* arbol, char* inicio, char* fin) {
 
   lista_t* lista = lista_crear();
   if(!lista) return NULL;
-
-  if( !(abb_pertenece(arbol, inicio)) ){
-    return lista;
-  }
 
   abb_ver_lista_rec(arbol->raiz, lista, inicio, fin, arbol->comparar);
   return lista;
