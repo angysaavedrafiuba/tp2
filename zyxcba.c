@@ -113,7 +113,7 @@ void ejecutar_comando_atender(clinica_t* clinica, char** parametros){
 void ejecutar_comando_informe(clinica_t* clinica, char** parametros){
 	lista_t* lista = informe_atendedores(clinica->gestion_turnos, parametros[0], parametros[1]);
 
-	printf(DOCTORES_SISTEMA, cantidad_atendedores(clinica->gestion_turnos));
+	printf(DOCTORES_SISTEMA, lista_largo(lista));
 
 	lista_iter_t* iter = lista_iter_crear(lista);
 	size_t i = 1;
@@ -123,7 +123,7 @@ void ejecutar_comando_informe(clinica_t* clinica, char** parametros){
 		lista_iter_avanzar(iter);
 		i++;
 	}
-	
+
 	lista_iter_destruir(iter);
 	lista_destruir(lista,(void (*)(void *))doctor_destruir);
 }
