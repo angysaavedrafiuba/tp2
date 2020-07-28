@@ -97,6 +97,7 @@ void ejecutar_comando_atender(clinica_t* clinica, char** parametros){
 	if ( doctor ){
 		atender = atender_siguiente(clinica->gestion_turnos, parametros[0], especialidad);
 		if(atender){
+			doctor_agregar_atendido(doctor);
 			paciente_t* paciente = obtener_atendido_actual(clinica->gestion_turnos);
 			char* nombre = obtener_nombre_paciente(paciente);
 			printf(PACIENTE_ATENDIDO, nombre);
@@ -125,7 +126,7 @@ void ejecutar_comando_informe(clinica_t* clinica, char** parametros){
 	}
 
 	lista_iter_destruir(iter);
-	lista_destruir(lista,(void (*)(void *))doctor_destruir);
+	lista_destruir(lista, NULL);
 }
 
 void ejecutar_comando(clinica_t* clinica, const char* comando, char** parametros){
