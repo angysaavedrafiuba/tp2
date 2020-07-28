@@ -10,7 +10,7 @@ typedef void (*lista_de_espera_destruir_dato_t)(void *);
 
 typedef int (*lista_de_espera_comparar_clave_t) (const void *, const void *);
 
-lista_de_espera_t* lista_de_espera_crear(lista_de_espera_comparar_clave_t comparar, lista_de_espera_destruir_dato_t destruir);
+lista_de_espera_t* lista_de_espera_crear(lista_de_espera_comparar_clave_t comparar);
 
 void lista_de_espera_destruir(lista_de_espera_t* lista_de_espera);
 

@@ -27,7 +27,7 @@ bool imprimir(const char *clave, void *dato, void *extra){
 }
 
 void gestion_turnos_destruir(gestion_turnos_t* gestion_turnos) {
-
+/*
 	//BLOQUE DE CODIGO SOLO PARA PRUEBAS
 	abb_in_order(gestion_turnos->atendedores, imprimir, NULL);
 	abb_in_order(gestion_turnos->atendidos, imprimir, NULL);
@@ -41,9 +41,7 @@ void gestion_turnos_destruir(gestion_turnos_t* gestion_turnos) {
 
 	hash_iter_destruir(iter);
 	//END BLOQUE DE CODIGO SOLO PARA PRUEBAS
-
-	if(gestion_turnos->atendido_actual)
-		gestion_turnos->dst_atendido(gestion_turnos->atendido_actual);
+*/
 
 	if(gestion_turnos->atendedores)
 		abb_destruir(gestion_turnos->atendedores);
@@ -92,7 +90,7 @@ bool agregar_atendido(gestion_turnos_t* gestion_turnos, char** datos, void* (*co
 bool agregar_atendedor(gestion_turnos_t* gestion_turnos, char** datos, void* (*constructor) (char**)){
 	void* dato = constructor(datos);
 	if (!dato) return false;
-	if (!hash_guardar(gestion_turnos->turnos, datos[1], lista_de_espera_crear(gestion_turnos->cmp_atendido, gestion_turnos->dst_atendido))){
+	if (!hash_guardar(gestion_turnos->turnos, datos[1], lista_de_espera_crear(gestion_turnos->cmp_atendido))){
 		gestion_turnos->dst_atendedor(dato);
 		return false;
 	}
@@ -117,8 +115,8 @@ bool atender_siguiente(gestion_turnos_t* gestion_turnos, char* nombre, char* cat
 	hash_t* turnos = gestion_turnos->turnos;
 	lista_de_espera_t* lista_de_espera = hash_obtener(turnos, categoria);
 
-	if(gestion_turnos->atendido_actual)
-		gestion_turnos->dst_atendido(gestion_turnos->atendido_actual);
+//	if(gestion_turnos->atendido_actual)
+//		gestion_turnos->dst_atendido(gestion_turnos->atendido_actual);
 	
 	gestion_turnos->atendido_actual = lista_de_espera_desencolar(lista_de_espera);
 	
@@ -134,6 +132,7 @@ bool atendido_existe(gestion_turnos_t* gestion_turnos, char* nombre){
 }
 
 bool categoria_existe(gestion_turnos_t* gestion_turnos, char* categoria){
+	//printf("CATEGORIA PEDIDA %s\n",categoria);
 	return hash_pertenece(gestion_turnos->turnos, categoria);
 }
 

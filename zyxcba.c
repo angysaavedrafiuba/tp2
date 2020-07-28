@@ -68,8 +68,8 @@ clinica_t* clinica_crear(char* csv_doctores, char* csv_pacientes){
 }
 
 void ejecutar_comando_pedir_turno(clinica_t* clinica, char** parametros){
-	bool paciente_existe = atendido_existe(clinica->gestion_turnos, parametros[1]);
-	bool especialidad_existe = categoria_existe(clinica->gestion_turnos, parametros[2]);
+	bool paciente_existe = atendido_existe(clinica->gestion_turnos, parametros[0]);
+	bool especialidad_existe = categoria_existe(clinica->gestion_turnos, parametros[1]);
 	bool urgencia_existe = prioridad_existe(clinica->gestion_turnos, parametros[2]);
 	bool turno = false;
 
@@ -116,14 +116,14 @@ void ejecutar_comando_informe(clinica_t* clinica, char** parametros){
 	printf(DOCTORES_SISTEMA, cantidad_atendedores(clinica->gestion_turnos));
 
 	lista_iter_t* iter = lista_iter_crear(lista);
-	size_t i = 0;
+	size_t i = 1;
 	while(!lista_iter_al_final(iter)){
 		doctor_t* doctor = lista_iter_ver_actual(iter);
 		printf(INFORME_DOCTOR, i, doctor_ver_nombre(doctor), doctor_ver_especialidad(doctor), doctor_ver_cant_atendidos(doctor));
 		lista_iter_avanzar(iter);
 		i++;
 	}
-
+	
 	lista_iter_destruir(iter);
 	lista_destruir(lista,(void (*)(void *))doctor_destruir);
 }
