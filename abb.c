@@ -292,6 +292,10 @@ lista_t* abb_ver_lista(abb_t* arbol, char* inicio, char* fin) {
   lista_t* lista = lista_crear();
   if(!lista) return NULL;
 
+  if( !(abb_pertenece(arbol, inicio)) ){
+    return lista;
+  }
+
   abb_ver_lista_rec(arbol->raiz, lista, inicio, fin, arbol->comparar);
   return lista;
 }
