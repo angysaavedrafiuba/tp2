@@ -21,28 +21,7 @@ struct gestion_turnos {
   gestion_turnos_comparar_clave_t cmp_atendido;
 };
 
-bool imprimir(const char *clave, void *dato, void *extra) {
-  printf("CLAVE EN ABB: %s\n", clave);
-  return true;
-}
-
 void gestion_turnos_destruir(gestion_turnos_t *gestion_turnos) {
-  /*
-          //BLOQUE DE CODIGO SOLO PARA PRUEBAS
-          abb_in_order(gestion_turnos->atendedores, imprimir, NULL);
-          abb_in_order(gestion_turnos->atendidos, imprimir, NULL);
-
-          hash_iter_t* iter = hash_iter_crear(gestion_turnos->turnos);
-
-          while(!hash_iter_al_final(iter)){
-                  printf("HASH: %s\n", hash_iter_ver_actual(iter));
-                  hash_iter_avanzar(iter);
-          }
-
-          hash_iter_destruir(iter);
-          //END BLOQUE DE CODIGO SOLO PARA PRUEBAS
-  */
-
   if (gestion_turnos->atendedores)
     abb_destruir(gestion_turnos->atendedores);
   if (gestion_turnos->atendidos)
@@ -128,9 +107,6 @@ bool atender_siguiente(gestion_turnos_t *gestion_turnos, char *nombre,
   hash_t *turnos = gestion_turnos->turnos;
   lista_de_espera_t *lista_de_espera = hash_obtener(turnos, categoria);
 
-  //	if(gestion_turnos->atendido_actual)
-  //		gestion_turnos->dst_atendido(gestion_turnos->atendido_actual);
-
   gestion_turnos->atendido_actual = lista_de_espera_desencolar(lista_de_espera);
 
   return gestion_turnos->atendido_actual;
@@ -146,7 +122,6 @@ bool atendido_existe(gestion_turnos_t *gestion_turnos, char *nombre) {
 }
 
 bool categoria_existe(gestion_turnos_t *gestion_turnos, char *categoria) {
-  // printf("CATEGORIA PEDIDA %s\n",categoria);
   return hash_pertenece(gestion_turnos->turnos, categoria);
 }
 
