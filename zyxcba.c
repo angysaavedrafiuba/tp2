@@ -4,6 +4,8 @@
 #include "mensajes.h"
 #include "paciente.h"
 #include "strutil.h"
+#include "csv.h"
+#include "lista.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
