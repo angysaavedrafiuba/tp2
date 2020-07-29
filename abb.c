@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 
 typedef struct nodo_abb {
   struct nodo_abb *izq;
@@ -46,7 +45,8 @@ size_t abb_cantidad(abb_t *arbol) { return arbol->cantidad; }
 
 nodo_abb_t *abb_buscar(nodo_abb_t *raiz, const char *clave,
                        abb_comparar_clave_t comparar, nodo_abb_t **padre) {
-  if( !raiz ) return NULL;
+  if (!raiz)
+    return NULL;
 
   int comparacion = comparar(clave, raiz->clave);
   nodo_abb_t *nodo_resultado = NULL;
@@ -81,7 +81,7 @@ bool abb_guardar(abb_t *arbol, const char *clave, void *dato) {
 
     if (nodo_aux) {
       free(nodo_aux->clave);
-      if(arbol->destruir)
+      if (arbol->destruir)
         arbol->destruir(nodo_aux->dato);
       nodo = nodo_aux;
     } else {
@@ -104,7 +104,7 @@ bool abb_guardar(abb_t *arbol, const char *clave, void *dato) {
 }
 
 void *abb_obtener(const abb_t *arbol, const char *clave) {
-  nodo_abb_t* padre = NULL;
+  nodo_abb_t *padre = NULL;
   nodo_abb_t *nodo = abb_buscar(arbol->raiz, clave, arbol->comparar, &padre);
 
   if (!nodo)
@@ -114,7 +114,7 @@ void *abb_obtener(const abb_t *arbol, const char *clave) {
 }
 
 bool abb_pertenece(const abb_t *arbol, const char *clave) {
-   nodo_abb_t* padre = NULL;
+  nodo_abb_t *padre = NULL;
   if (!abb_buscar(arbol->raiz, clave, arbol->comparar, &padre))
     return false;
 
@@ -262,27 +262,27 @@ void *abb_borrar(abb_t *arbol, const char *clave) {
 }
 //********************** abb ver lista ********************
 
-
-void abb_ver_lista_rec(nodo_abb_t* raiz, lista_t* lista, char* inicio, char* fin, abb_comparar_clave_t comparar) {
-  if(!raiz) return;
+void abb_ver_lista_rec(nodo_abb_t *raiz, lista_t *lista, char *inicio,
+                       char *fin, abb_comparar_clave_t comparar) {
+  if (!raiz)
+    return;
 
   int cmp_inicio = comparar(inicio, raiz->clave);
   int cmp_fin = comparar(fin, raiz->clave);
 
-  if(cmp_inicio >= 0) {
-    if(cmp_inicio == 0)
+  if (cmp_inicio >= 0) {
+    if (cmp_inicio == 0)
       lista_insertar_ultimo(lista, raiz->dato);
-    if(cmp_fin > 0 || strcmp(fin, "") == 0)
+    if (cmp_fin > 0 || strcmp(fin, "") == 0)
       abb_ver_lista_rec(raiz->der, lista, inicio, fin, comparar);
-    
-  }
-  else if(cmp_inicio < 0) {
+
+  } else if (cmp_inicio < 0) {
     abb_ver_lista_rec(raiz->izq, lista, inicio, fin, comparar);
-    if(cmp_fin == 0) {
+    if (cmp_fin == 0) {
       lista_insertar_ultimo(lista, raiz->dato);
       return;
     }
-    if(cmp_fin > 0 || strcmp(fin, "") == 0) {
+    if (cmp_fin > 0 || strcmp(fin, "") == 0) {
       lista_insertar_ultimo(lista, raiz->dato);
       abb_ver_lista_rec(raiz->der, lista, inicio, fin, comparar);
     }
@@ -291,14 +291,15 @@ void abb_ver_lista_rec(nodo_abb_t* raiz, lista_t* lista, char* inicio, char* fin
   return;
 }
 
-lista_t* abb_ver_lista(abb_t* arbol, char* inicio, char* fin) {
-  if(arbol->comparar(inicio, fin) > 0) {
-    if(strcmp(fin, "") != 0)
+lista_t *abb_ver_lista(abb_t *arbol, char *inicio, char *fin) {
+  if (arbol->comparar(inicio, fin) > 0) {
+    if (strcmp(fin, "") != 0)
       return NULL;
   }
 
-  lista_t* lista = lista_crear();
-  if(!lista) return NULL;
+  lista_t *lista = lista_crear();
+  if (!lista)
+    return NULL;
 
   abb_ver_lista_rec(arbol->raiz, lista, inicio, fin, arbol->comparar);
   return lista;
@@ -375,9 +376,9 @@ bool abb_iter_in_avanzar(abb_iter_t *iter) {
 }
 
 const char *abb_iter_in_ver_actual(const abb_iter_t *iter) {
-  nodo_abb_t* tope = pila_ver_tope(iter->pila);
-  
-  if(!tope)
+  nodo_abb_t *tope = pila_ver_tope(iter->pila);
+
+  if (!tope)
     return NULL;
 
   return tope->clave;
