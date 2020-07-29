@@ -10,7 +10,6 @@ struct paciente {
 };
 
 int paciente_cmp(const paciente_t *pac1, const paciente_t *pac2) {
-  // printf("pac1: %s pac2: %s\n", pac1->ingreso, pac2->ingreso);
   if (pac1->ingreso > pac2->ingreso)
     return -1;
   if (pac1->ingreso < pac2->ingreso)
@@ -26,14 +25,14 @@ paciente_t *paciente_crear(char **datos_paciente) {
 
   paciente->nombre = strdup(datos_paciente[0]);
   char *resto = NULL;
-  paciente->ingreso = strtol(datos_paciente[1], &resto, 10);
+  long ingreso_paciente = strtol(datos_paciente[1], &resto, 10);
+  paciente->ingreso = (int)ingreso_paciente;
 
   return paciente;
 }
 
 void paciente_destruir(paciente_t *paciente) {
   free(paciente->nombre);
-  // free(paciente->ingreso);
   free(paciente);
 }
 
