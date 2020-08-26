@@ -18,8 +18,6 @@ typedef struct clinica {
   gestion_turnos_t *gestion_turnos;
 } clinica_t;
 
-typedef void (*comando_t)(clinica_t *, char **);
-
 void clinica_destruir(clinica_t *clinica) {
   if (clinica->gestion_turnos) {
     gestion_turnos_destruir(clinica->gestion_turnos);
@@ -152,10 +150,6 @@ void ejecutar_comando_informe(clinica_t *clinica, char **parametros) {
   lista_destruir(lista, NULL);
 }
 
-void ejecutar_comando(clinica_t *clinica, char **parametros, comando_t cmd) {
-  cmd(clinica, parametros);
-}
-
 bool check_command_params(const char *cmd, char** parametros, size_t cantidad){
   for (size_t i = 0; i < cantidad; i++) {
       if (!parametros[i]) {
@@ -171,17 +165,17 @@ void procesar_comando(clinica_t *clinica, const char *comando,
   if (strcmp(comando, COMANDO_PEDIR_TURNO) == 0) {
     if(!check_command_params(comando, parametros, 3))
         return;
-    ejecutar_comando(clinica, parametros, ejecutar_comando_pedir_turno);
+    ejecutar_comando_pedir_turno(clinica, parametros);
 
   } else if (strcmp(comando, COMANDO_ATENDER) == 0) {
     if(!check_command_params(comando, parametros, 1))
         return;
-    ejecutar_comando(clinica, parametros, ejecutar_comando_atender);
+    ejecutar_comando_atender(clinica, parametros);
 
   } else if (strcmp(comando, COMANDO_INFORME) == 0) {
     if(!check_command_params(comando, parametros, 2))
         return;
-    ejecutar_comando(clinica, parametros, ejecutar_comando_informe);
+    ejecutar_comando_informe(clinica, parametros);
 
   } else {
     printf(ENOENT_CMD, comando);
