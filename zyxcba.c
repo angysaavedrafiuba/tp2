@@ -18,6 +18,8 @@ typedef struct clinica {
   gestion_turnos_t *gestion_turnos;
 } clinica_t;
 
+typedef void (*comando_t)(clinica_t *, char **);
+
 void clinica_destruir(clinica_t *clinica) {
   if (clinica->gestion_turnos) {
     gestion_turnos_destruir(clinica->gestion_turnos);
@@ -42,9 +44,10 @@ bool clinica_agregar_paciente(char **datos, void *gestion) {
 }
 
 bool clinica_agregar_doctor(char **datos, void *gestion) {
-  for (size_t i = 0; i < 2; i++)
+  for (size_t i = 0; i < 2; i++){
     if (!datos[i])
       return false;
+  }
 
   return agregar_atendedor((gestion_turnos_t *)gestion, datos,
                            (void *(*)(char **))doctor_crear);
@@ -86,10 +89,9 @@ void ejecutar_comando_pedir_turno(clinica_t *clinica, char **parametros) {
       categoria_existe(clinica->gestion_turnos, parametros[1]);
   bool urgencia_existe =
       prioridad_existe(clinica->gestion_turnos, parametros[2]);
-  bool turno = false;
 
   if (paciente_existe && especialidad_existe && urgencia_existe) {
-    turno = pedir_turno(clinica->gestion_turnos, parametros[0], parametros[1],
+    bool turno = pedir_turno(clinica->gestion_turnos, parametros[0], parametros[1],
                         parametros[2]);
     if (turno) {
       printf(PACIENTE_ENCOLADO, parametros[0]);
@@ -150,43 +152,36 @@ void ejecutar_comando_informe(clinica_t *clinica, char **parametros) {
   lista_destruir(lista, NULL);
 }
 
-void ejecutar_comando(clinica_t *clinica, const char *comando,
-                      char **parametros) {
-  if (strcmp(comando, COMANDO_PEDIR_TURNO) == 0) {
-    ejecutar_comando_pedir_turno(clinica, parametros);
-  } else if (strcmp(comando, COMANDO_ATENDER) == 0) {
-    ejecutar_comando_atender(clinica, parametros);
-  } else if (strcmp(comando, COMANDO_INFORME) == 0) {
-    ejecutar_comando_informe(clinica, parametros);
+void ejecutar_comando(clinica_t *clinica, char **parametros, comando_t cmd) {
+  cmd(clinica, parametros);
+}
+
+bool check_command_params(const char *cmd, char** parametros, size_t cantidad){
+  for (size_t i = 0; i < cantidad; i++) {
+      if (!parametros[i]) {
+        printf(ENOENT_PARAMS, cmd);
+        return false;
+      }
   }
+  return true;
 }
 
 void procesar_comando(clinica_t *clinica, const char *comando,
                       char **parametros) {
   if (strcmp(comando, COMANDO_PEDIR_TURNO) == 0) {
-    for (int i = 0; i < 3; i++) {
-      if (!parametros[i]) {
-        printf(ENOENT_PARAMS, comando);
+    if(!check_command_params(comando, parametros, 3))
         return;
-      }
-    }
-    ejecutar_comando(clinica, comando, parametros);
+    ejecutar_comando(clinica, parametros, ejecutar_comando_pedir_turno);
 
   } else if (strcmp(comando, COMANDO_ATENDER) == 0) {
-    if (!parametros[0]) {
-      printf(ENOENT_PARAMS, comando);
-      return;
-    }
-    ejecutar_comando(clinica, comando, parametros);
+    if(!check_command_params(comando, parametros, 1))
+        return;
+    ejecutar_comando(clinica, parametros, ejecutar_comando_atender);
 
   } else if (strcmp(comando, COMANDO_INFORME) == 0) {
-    for (int i = 0; i < 2; i++) {
-      if (!parametros[i]) {
-        printf(ENOENT_PARAMS, comando);
+    if(!check_command_params(comando, parametros, 2))
         return;
-      }
-    }
-    ejecutar_comando(clinica, comando, parametros);
+    ejecutar_comando(clinica, parametros, ejecutar_comando_informe);
 
   } else {
     printf(ENOENT_CMD, comando);

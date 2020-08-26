@@ -35,16 +35,22 @@ void doctor_destruir(doctor_t *doctor) {
 char *doctor_ver_especialidad(doctor_t *doctor) {
   if (!doctor)
     return NULL;
-
   return doctor->especialidad;
 }
 
 void doctor_agregar_atendido(doctor_t *doctor) {
+  if (!doctor)
+    return;
   doctor->pacientes_atendidos++;
 }
 
-char *doctor_ver_nombre(doctor_t *doctor) { return doctor->nombre; }
+char *doctor_ver_nombre(doctor_t *doctor) {
+  if (!doctor)
+    return NULL;
+  return doctor->nombre; }
 
 size_t doctor_ver_cant_atendidos(doctor_t *doctor) {
+  if (!doctor)
+    return 0;
   return doctor->pacientes_atendidos;
 }
