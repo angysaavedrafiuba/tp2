@@ -12,7 +12,7 @@
 #define URGENCIA_2 "REGULAR"
 
 struct gestion_turnos {
-  abb_t *atendidos;
+  hash_t *atendidos;
   abb_t *atendedores;
   hash_t *turnos;
   void *atendido_actual;
@@ -25,7 +25,7 @@ void gestion_turnos_destruir(gestion_turnos_t *gestion_turnos) {
   if (gestion_turnos->atendedores)
     abb_destruir(gestion_turnos->atendedores);
   if (gestion_turnos->atendidos)
-    abb_destruir(gestion_turnos->atendidos);
+    hash_destruir(gestion_turnos->atendidos);
   if (gestion_turnos->turnos)
     hash_destruir(gestion_turnos->turnos);
   free(gestion_turnos);
@@ -41,7 +41,7 @@ gestion_turnos_crear(gestion_turnos_destruir_dato_t dst_atendedor,
     return NULL;
 
   gestion_turnos->atendedores = abb_crear(strcmp, dst_atendedor);
-  gestion_turnos->atendidos = abb_crear(strcmp, dst_atendido);
+  gestion_turnos->atendidos = hash_crear((hash_destruir_dato_t)dst_atendido);
   gestion_turnos->turnos =
       hash_crear((hash_destruir_dato_t)lista_de_espera_destruir);
   gestion_turnos->atendido_actual = NULL;
@@ -70,7 +70,7 @@ bool agregar_atendido(gestion_turnos_t *gestion_turnos, char **datos,
   void *dato = constructor(datos);
   if (!dato)
     return false;
-  return abb_guardar(gestion_turnos->atendidos, datos[0], dato);
+  return hash_guardar(gestion_turnos->atendidos, datos[0], dato);
 }
 
 bool agregar_atendedor(gestion_turnos_t *gestion_turnos, char **datos,
@@ -93,10 +93,10 @@ void *gestion_turnos_obtener_atendedor(gestion_turnos_t *gestion_turnos,
 
 bool pedir_turno(gestion_turnos_t *gestion_turnos, char *nombre,
                  char *categoria, char *prioridad) {
-  abb_t *pacientes = gestion_turnos->atendidos;
+  hash_t *pacientes = gestion_turnos->atendidos;
   hash_t *turnos = gestion_turnos->turnos;
 
-  void *paciente = abb_obtener(pacientes, nombre);
+  void *paciente = hash_obtener(pacientes, nombre);
   lista_de_espera_t *lista_de_espera = hash_obtener(turnos, categoria);
 
   return lista_de_espera_guardar(lista_de_espera, prioridad, paciente);
@@ -118,7 +118,7 @@ lista_t *informe_atendedores(gestion_turnos_t *gestion_turnos, char *inicio,
 }
 
 bool atendido_existe(gestion_turnos_t *gestion_turnos, char *nombre) {
-  return abb_pertenece(gestion_turnos->atendidos, nombre);
+  return hash_pertenece(gestion_turnos->atendidos, nombre);
 }
 
 bool categoria_existe(gestion_turnos_t *gestion_turnos, char *categoria) {
